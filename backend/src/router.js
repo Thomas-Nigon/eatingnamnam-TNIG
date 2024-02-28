@@ -7,7 +7,6 @@ const router = express.Router();
 /* ************************************************************************* */
 
 // Import itemControllers module for handling item-related operations
-const itemControllers = require("./controllers/itemControllers");
 const recipeControllers = require("./controllers/recipeControllers");
 const ustensilControllers = require("./controllers/ustensilControllers");
 const tagControllers = require("./controllers/tagControllers");
@@ -18,53 +17,54 @@ const stepControllers = require("./controllers/stepControllers");
 const { hashPassword } = require("./middleware/hashPassword");
 const authControllers = require("./controllers/authControllers");
 const { uploadService, handleFileUpload } = require("./services/upload");
+const { authorize } = require("./middleware/auth");
 
-router.get("/me", userControllers.getUser);
-router.delete("/recipe/:id/delete", recipeControllers.deleteById);
+router.post("/add/comment", commentControllers.addComments);
+router.post("/add/steps", stepControllers.add);
+router.post("/add/user", hashPassword, userControllers.register);
+
+router.post("/login", authControllers.login);
+router.get("/logout", authControllers.logout);
+
+router.get("/grade/:recipeID", commentControllers.rating);
+
+router.get("/me", authorize, userControllers.readByCookieId);
+
+router.get("/randomrecipe", recipeControllers.randomRecipe);
+
 router.get("/recipe", recipeControllers.browse);
+router.delete("/recipe/:id/delete", recipeControllers.deleteById);
 router.get("/recipe/:id", recipeControllers.recipeById);
-router.get("/recipe/:id/utensils", ustensilControllers.utensilByRecipeId);
 router.get("/recipe/:id/comments", commentControllers.commentByRecipeId);
-router.get("/recipe/:id/steps", stepControllers.stepByRecipeId);
-router.post(
-  "/upload",
-  uploadService,
-  handleFileUpload,
-  recipeControllers.uploadPic
+router.get(
+  "/recipe/:id/ingredients",
+  ingredientControllers.ingredientListByRecipId
 );
+router.get("/recipe/:id/steps", stepControllers.stepByRecipeId);
+router.get("/recipe/:id/utensils", ustensilControllers.utensilByRecipeId);
 router.post(
   "/recipe/:id/upload",
   uploadService,
   handleFileUpload,
   recipeControllers.uploadPic
 );
-router.post("/user/:id/add/recipe", recipeControllers.add);
-router.post("/add/steps", stepControllers.add);
-
-router.post("/add/comment", commentControllers.addComments);
-
 router.get("/recipe/tag/:id", recipeControllers.recipeByTag);
-router.get(
-  "/recipe/:id/ingredients",
-  ingredientControllers.ingredientListByRecipId
+router.post(
+  "/upload",
+  uploadService,
+  handleFileUpload,
+  recipeControllers.uploadPic
 );
-router.get("/recipe/fav/user/:id", recipeControllers.recipeByFav);
-router.get("/randomrecipe", recipeControllers.randomRecipe);
-router.get("/tag", tagControllers.browseByTag);
+router.get("/recipe/users/:id", recipeControllers.recipeByUserId);
+
 router.get("/user", userControllers.browse);
+router.post("/user/:id/add/recipe", recipeControllers.add);
 router.get("/user/:id", userControllers.readById);
-router.get("/recipe/user/:id", recipeControllers.recipeByUserId);
-router.post("/adduser", hashPassword, userControllers.register);
-router.post("/login", authControllers.login);
-router.get("/logout", authControllers.logout);
 router.get("/step/:id", stepControllers.stepByRecipeId);
-router.get("/grade/:recipeID", commentControllers.rating);
+
+/* *******************************UNUSED*************************************** */
 router.get("/ingredients", ingredientControllers.browse);
-
-router.get("/items/:id", itemControllers.read);
-router.get("/items", itemControllers.browse);
-router.post("/items", itemControllers.add);
-
-/* ************************************************************************* */
+router.get("/tag", tagControllers.browseByTag);
+router.get("/recipe/fav/user/:id", recipeControllers.recipeByFav);
 
 module.exports = router;

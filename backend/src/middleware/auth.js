@@ -1,12 +1,13 @@
 const jwt = require("jsonwebtoken");
 
 const authorize = (req, res, next) => {
-  const token = req.cookies.access_token;
+  const myCookieToken = req.headers.cookie;
+  const token = myCookieToken?.split("jwt=")[1];
   if (!token) return res.sendStatus(401);
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_AUTH_SECRET);
-    req.idUser = decoded.id;
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.idUser = decoded.sub;
     req.roleUser = decoded.role;
     next();
   } catch (error) {
