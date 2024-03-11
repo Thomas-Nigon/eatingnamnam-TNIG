@@ -18,10 +18,11 @@ const { hashPassword } = require("./middleware/hashPassword");
 const authControllers = require("./controllers/authControllers");
 const { uploadService, handleFileUpload } = require("./services/upload");
 const { authorize } = require("./middleware/auth");
+const validateUser = require("./middleware/validateUser");
 
 router.post("/add/comment", commentControllers.addComments);
 router.post("/add/steps", stepControllers.add);
-router.post("/add/user", hashPassword, userControllers.register);
+router.post("/add/user", validateUser, hashPassword, userControllers.register);
 
 router.post("/login", authControllers.login);
 router.get("/logout", authControllers.logout);
