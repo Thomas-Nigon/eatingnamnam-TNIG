@@ -6,14 +6,14 @@ import RecipeCardUser from "../../components/RecipeCardUser/RecipeCardUser";
 
 function UserProfil() {
   const [recipes, setRecipes] = useState([]);
-  const { auth, setAuth } = useContext(UserContext);
+  const { setAuth } = useContext(UserContext);
   const navigate = useNavigate();
   const { userId } = useParams();
   const [user, setUser] = useState({});
   const [myInfo, setMyInfo] = useState(false);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/recipe/user/${auth.id}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/recipe/user/${userId}`)
       .then((response) => response.json())
       .then((data) => setRecipes(data))
       .catch((error) => console.error(error));

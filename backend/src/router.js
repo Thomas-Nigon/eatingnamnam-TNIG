@@ -56,7 +56,7 @@ router.post(
   handleFileUpload,
   recipeControllers.uploadPic
 );
-router.get("/recipe/users/:id", recipeControllers.recipeByUserId);
+router.get("/recipe/user/:id", recipeControllers.recipeByUserId);
 
 router.get("/user", userControllers.browse);
 router.post("/user/:id/add/recipe", recipeControllers.add);
